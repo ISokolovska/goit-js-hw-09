@@ -1,8 +1,26 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
+const timerEl = document.querySelector('.timer');
 const buttonStart = document.querySelector(['button[data-start]']);
-// const timer = document.querySelector('.timer');
+let daysSpan = timerEl.querySelector(['span[data-days]']);
+let hoursSpan = timerEl.querySelector(['span[data-hours]']);
+let minutesSpan = timerEl.querySelector(['span[data-minutes]']);
+let secondsSpan = timerEl.querySelector(['span[data-seconds]']);
+let field = timerEl.querySelectorAll('.field');
+let timerStart;
 let timerId = null;
+timerEl.style.display = 'flex';
+timerEl.style.textAlign = 'center';
+timerEl.style.gap = '20px';
+timerEl.style.fontSize = '40px';
+
+field.forEach((element, index, array) => {
+  element.style.display = 'flex';
+  element.style.flexDirection = 'column';
+});
+
+console.log(field);
 
 buttonStart.setAttribute('disabled', '');
 
@@ -13,39 +31,34 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     if (selectedDates[0] < new Date()) {
-      window.alert('Please choose a date in the future');
+      Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       buttonStart.removeAttribute('disabled');
+      timerStart = selectedDates[0] - new Date();
+      buttonStart.addEventListener('click', () => {
+        startTimer(timerStart);
+      });
     }
     console.log(selectedDates[0]);
   },
 };
 
-flatpickr('#datetime-picker', { options });
+flatpickr('#datetime-picker', options);
 
-buttonStart.addEventListener('click', startTimer);
-
-function startTimer(id, endtime) {
-  let timer = document.querySelector('.timer');
-  let daysSpan = timer.querySelector(['span[data-days]']);
-  var hoursSpan = timer.querySelector(['span[data-hours]']);
-  var minutesSpan = timer.querySelector(['span[data-minutes]']);
-  var secondsSpan = timer.querySelector(['span[data-seconds]']);
-  convertMs();
-}
-
-// function startTimer() {
-//   timerId = setInterval(function () {
-//     let timer = convertMs(selectedDates[0] - new Date()).fp_incr(1);
-//   }, 1000);
-// }
-
-function clearIntervalTimer() {
-  let diff = convertMs(selectedDates[0] - new Date()).fp_incr(1);
-  if (diff <= 0) {
-    clearInterval(timerId);
-    buttonStart.setAttribute('disabled');
-  }
+function startTimer(timerStart) {
+  timerId = setInterval(function () {
+    let timer = convertMs(timerStart);
+    daysSpan.textContent = addLeadingZero(timer.days);
+    hoursSpan.textContent = addLeadingZero(timer.hours);
+    minutesSpan.textContent = addLeadingZero(timer.minutes);
+    secondsSpan.textContent = addLeadingZero(timer.seconds);
+    timerStart = timerStart - 1000;
+    if (timerStart < 0) {
+      clearInterval(timerId);
+      buttonStart.setAttribute('disabled', '');
+      buttonStart.removeEventListener('click', startTimer);
+    }
+  }, 1000);
 }
 
 function convertMs(ms) {
@@ -68,7 +81,6 @@ function convertMs(ms) {
 }
 
 function addLeadingZero(number) {
-  const newNumber = number.padStart(2, '0');
-  return (document.querySelector('.label').textContent = newNumber);
+  const newNumber = number.toString().padStart(2, '0');
+  return newNumber;
 }
-addLeadingZero();
