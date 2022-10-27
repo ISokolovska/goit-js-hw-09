@@ -12,9 +12,11 @@ buttonStart.addEventListener('click', () => {
     document.body.style.backgroundColor = randomBodyColor;
   }, 1000);
   buttonStart.setAttribute('disabled', '');
+  buttonStop.removeAttribute('disabled');
 });
 
 buttonStop.addEventListener('click', () => {
   clearInterval(timerId);
   buttonStart.removeAttribute('disabled');
+  buttonStop.setAttribute('disabled', '');
 });

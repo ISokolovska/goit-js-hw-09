@@ -1,6 +1,7 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
+const datetimePicker = document.querySelector('#datetime-picker');
 const timerEl = document.querySelector('.timer');
 const buttonStart = document.querySelector(['button[data-start]']);
 let daysSpan = timerEl.querySelector(['span[data-days]']);
@@ -20,8 +21,6 @@ field.forEach((element, index, array) => {
   element.style.flexDirection = 'column';
 });
 
-console.log(field);
-
 buttonStart.setAttribute('disabled', '');
 
 const options = {
@@ -37,6 +36,8 @@ const options = {
       timerStart = selectedDates[0] - new Date();
       buttonStart.addEventListener('click', () => {
         startTimer(timerStart);
+        buttonStart.setAttribute('disabled', '');
+        datetimePicker.setAttribute('disabled', '');
       });
     }
     console.log(selectedDates[0]);
