@@ -29,31 +29,37 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates[0] < new Date()) {
+    const currentDate = new Date();
+    const selectedDate = selectedDates[0];
+    if (currentDate.getTime() > selectedDate.getTime()) {
       Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       buttonStart.removeAttribute('disabled');
-      timerStart = selectedDates[0] - new Date();
+      timerStart = selectedDate.getTime() - currentDate.getTime();
       buttonStart.addEventListener('click', () => {
         startTimer(timerStart);
         buttonStart.setAttribute('disabled', '');
         datetimePicker.setAttribute('disabled', '');
       });
     }
-    console.log(selectedDates[0]);
+    console.log(selectedDate);
   },
 };
 
 flatpickr('#datetime-picker', options);
+function clickStartTimer() {
+  let timer = convertMs(timerStart);
+  daysSpan.textContent = addLeadingZero(timer.days);
+  hoursSpan.textContent = addLeadingZero(timer.hours);
+  minutesSpan.textContent = addLeadingZero(timer.minutes);
+  secondsSpan.textContent = addLeadingZero(timer.seconds);
+  timerStart = timerStart - 1000;
+}
 
 function startTimer(timerStart) {
+  clickStartTimer();
   timerId = setInterval(function () {
-    let timer = convertMs(timerStart);
-    daysSpan.textContent = addLeadingZero(timer.days);
-    hoursSpan.textContent = addLeadingZero(timer.hours);
-    minutesSpan.textContent = addLeadingZero(timer.minutes);
-    secondsSpan.textContent = addLeadingZero(timer.seconds);
-    timerStart = timerStart - 1000;
+    clickStartTimer();
     if (timerStart < 0) {
       clearInterval(timerId);
       buttonStart.setAttribute('disabled', '');

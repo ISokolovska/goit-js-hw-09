@@ -7,22 +7,25 @@ function handleSubmit(event) {
   const formDelay = event.target.delay.value;
   const formStep = event.target.step.value;
   const formAmount = event.target.amount.value;
-  let delay = +formDelay;
+  let delay = Number(formDelay);
 
   for (let i = 1; i <= Number(formAmount); i++) {
     createPromise(i, delay)
-      .then(data => {
+      .then(({ position, delay }) => {
         // console.log(data);
-        Notiflix.Notify.success(`✅ Fulfilled promise ${i} in ${data}ms`);
+        Notiflix.Notify.success(
+          `✅ Fulfilled promise ${position} in ${delay}ms`
+        );
       })
-      .catch(data => {
-        Notiflix.Notify.failure(`❌ Rejected promise ${i} in ${data}ms`);
+      .catch(({ position, delay }) => {
+        Notiflix.Notify.failure(
+          `❌ Rejected promise ${position} in ${delay}ms`
+        );
       });
-    delay += +formStep;
+    delay += Number(formStep);
   }
 }
-const response = fetch('google.com');
-response.data;
+
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
   const promise = new Promise((resolve, reject) => {
@@ -30,14 +33,13 @@ function createPromise(position, delay) {
       if (shouldResolve) {
         // Fulfill
         // console.log(delay);
-        resolve(delay);
+        resolve({ position, delay });
       } else {
         // Reject
         // console.log(delay);
-        reject(delay);
+        reject({ position, delay });
       }
     }, delay);
   });
-
   return promise;
 }
