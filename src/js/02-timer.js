@@ -20,7 +20,7 @@ field.forEach((element, index, array) => {
   element.style.display = 'flex';
   element.style.flexDirection = 'column';
 });
-
+buttonStart.setAttribute('disabled', '');
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -38,17 +38,13 @@ const options = {
   },
 };
 flatpickr('#datetime-picker', options);
-buttonStart.setAttribute('disabled', '');
-buttonStart.addEventListener('click', startTimer);
 
 function timeOutPut(timerStart) {
-  let timer = convertMs(timerStart);
-  console.log(timerStart);
-  console.log(timer);
-  daysSpan.textContent = addLeadingZero(timer.days);
-  hoursSpan.textContent = addLeadingZero(timer.hours);
-  minutesSpan.textContent = addLeadingZero(timer.minutes);
-  secondsSpan.textContent = addLeadingZero(timer.seconds);
+  let { days, hours, minutes, seconds } = convertMs(timerStart);
+  daysSpan.textContent = addLeadingZero(days);
+  hoursSpan.textContent = addLeadingZero(hours);
+  minutesSpan.textContent = addLeadingZero(minutes);
+  secondsSpan.textContent = addLeadingZero(seconds);
 }
 
 function startTimer(timerStart) {
@@ -57,16 +53,14 @@ function startTimer(timerStart) {
   buttonStart.removeEventListener('click', startTimer);
   timerId = setInterval(function () {
     timerStart = new Date(datetimePicker.value) - new Date();
-
     if (timerStart >= 0) {
       timeOutPut(timerStart);
-      timerStart = timerStart - 1000;
       return;
     }
-
     clearInterval(timerId);
   }, 1000);
 }
+buttonStart.addEventListener('click', startTimer);
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -87,7 +81,6 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-function addLeadingZero(number) {
-  const newNumber = number.toString().padStart(2, '0');
-  return newNumber;
+function addLeadingZero(value) {
+  return (newNumber = String(value).padStart(2, '0'));
 }
