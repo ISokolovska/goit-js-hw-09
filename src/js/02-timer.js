@@ -47,10 +47,11 @@ function timeOutPut(timerStart) {
   secondsSpan.textContent = addLeadingZero(seconds);
 }
 
-function startTimer(timerStart) {
+function startTimer() {
   buttonStart.setAttribute('disabled', '');
   datetimePicker.setAttribute('disabled', '');
   buttonStart.removeEventListener('click', startTimer);
+  timeOutPut(new Date(datetimePicker.value) - new Date());
   timerId = setInterval(function () {
     timerStart = new Date(datetimePicker.value) - new Date();
     if (timerStart >= 0) {
