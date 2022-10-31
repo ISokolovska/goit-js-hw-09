@@ -82,5 +82,5 @@ function convertMs(ms) {
 }
 
 function addLeadingZero(value) {
-  return (newNumber = String(value).padStart(2, '0'));
+  return String(value).padStart(2, '0');
 }
